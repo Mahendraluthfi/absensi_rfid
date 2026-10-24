@@ -1,58 +1,166 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 Sistem Presensi / Absensi Siswa Berbasis RFID Tag
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi sistem absensi dan presensi siswa mandiri berbasis **RFID Tag Reader (USB HID Keyboard Emulation)** yang modern, responsif, dan fleksibel. Dibangun menggunakan stack modern **Laravel 11**, **Vue 3 (Inertia.js)**, **Tailwind CSS**, dan **MySQL**.
 
-## About Laravel
+Mendukung **Multi-Sesi Dinamis** (Absen Pagi, Sholat Dhuhur, Absen Pulang, Ekstrakurikuler, dll.), **Deteksi Sesi Otomatis** berdasarkan jam operasional, **Tampilan Foto Profil Siswa** berukuran besar saat tap kartu, audio feedback (Web Audio API), serta **Laporan Kehadiran & Rekap Matriks Bulanan** dengan fitur ekspor Excel (.xlsx).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Utama
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **🚀 Kiosk Terminal Scan RFID (`/attendance/scan`)**:
+  - Kompatibel dengan alat USB RFID Reader (Plug & Play / Keyboard Emulation).
+  - Tampilan foto siswa beresolusi tinggi saat tap kartu berhasil.
+  - Audio feedback otomatis (nada sukses, nada peringatan dobel tap, dan nada error).
+  - Anti-duplikasi tap dalam sesi yang sama (mencegah siswa tap 2 kali).
+  - Mode fullscreen & live digital clock (WIB / UTC+07:00).
+- **⏱️ Multi-Sesi Presensi Dinamis**:
+  - Konfigurasi kategori sesi fleksibel (misal: Absen Berangkat, Sholat Dhuhur, Absen Pulang, Ekstrakurikuler).
+  - Deteksi keterlambatan otomatis dan perhitungan selisih menit terlambat.
+  - Opsi override sesi manual jika dibutuhkan operator gerbang/guru piket.
+- **👨‍🎓 Manajemen Data Siswa**:
+  - CRUD lengkap data siswa (NISN, Nama, Kelas, RFID UID, Foto, No Telepon, Status).
+  - Upload dan live preview foto profil siswa.
+  - Quick RFID Card Pairing (pasangkan kartu langsung dengan sekali tap).
+  - Import data siswa dari Excel (.xlsx) & Export ke Excel.
+- **📊 Laporan & Rekapitulasi Presensi (`/reports`)**:
+  - Log detail riwayat tap per tanggal, jam, kelas, dan kategori.
+  - Rekap Matriks Kehadiran Bulanan (Format H/T/S/I/A per tanggal).
+  - Filter pencarian nama/NISN, kelas, dan rentang tanggal.
+  - Ekspor laporan ke file Microsoft Excel (.xlsx) dan fitur Cetak / Print.
+- **🎨 UI Modern & Dark Mode**:
+  - Desain modern bernuansa Tailwind CSS & komponen bergaya Shadcn UI.
+  - Dukungan tema Terang (Light) dan Gelap (Dark) dengan kontras tinggi.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Tech Stack
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Backend**: Laravel 11 (PHP 8.3)
+- **Frontend**: Vue 3 (Composition API) + Inertia.js
+- **Styling**: Tailwind CSS + Lucide Icons
+- **Database**: MySQL / MariaDB
+- **Excel Processing**: PhpSpreadsheet (`phpoffice/phpspreadsheet`)
+- **Testing**: PHPUnit / Laravel Test Suite (36 passing tests)
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 📋 Persyaratan Sistem (Prerequisites)
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Sebelum menginstal, pastikan komputer/server Anda telah terpasang:
 
+1. **PHP** versi `>= 8.2` (Direkomendasikan PHP 8.3)
+   - Ekstensi PHP wajib aktif: `pdo_mysql`, `mbstring`, `openssl`, `curl`, `fileinfo`, `gd`, `zip`.
+2. **Composer** versi `>= 2.x`
+3. **Node.js** versi `>= 18.x` & **NPM**
+4. **MySQL** versi `>= 5.7` atau **MariaDB** versi `>= 10.3`
+5. *(Opsional)* **USB RFID Reader** (125 KHz EM4100/TK4100 atau 13.56 MHz Mifare/NFC)
+
+---
+
+## 🚀 Panduan Instalasi (Step-by-Step)
+
+Ikuti langkah-langkah berikut untuk menjalankan project di komputer lokal:
+
+### 1. Clone Repository
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/Mahendraluthfi/absensi_rfid.git
+cd absensi_rfid
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Install Dependensi PHP (Composer)
+```bash
+composer install
+```
 
-## Contributing
+### 3. Install Dependensi Frontend (NPM)
+```bash
+npm install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Konfigurasi Environment (`.env`)
+Salin file `.env.example` menjadi `.env`:
+```bash
+# Windows PowerShell
+copy .env.example .env
 
-## Code of Conduct
+# Linux / macOS / Git Bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Buka file `.env` dan sesuaikan koneksi database MySQL Anda:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=absensi_rfid
+DB_USERNAME=root
+DB_PASSWORD=
+```
+> **Catatan**: Buat database kosong bernama `absensi_rfid` terlebih dahulu di MySQL (misal via phpMyAdmin, MySQL Workbench, atau terminal: `CREATE DATABASE absensi_rfid;`).
 
-## Security Vulnerabilities
+### 5. Generate Application Key
+```bash
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 6. Jalankan Migrasi & Seeder Database
+Perintah ini akan membuat struktur tabel dan mengisi data awal (115 data siswa, foto profil dummy, kategori sesi absensi, aturan jam sekolah, dan akun admin):
+```bash
+php artisan migrate:fresh --seed
+```
 
-## License
+### 7. Buat Symbolic Link Storage (Jika Dibutuhkan)
+```bash
+php artisan storage:link
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 8. Kompilasi Aset Frontend
+Untuk mode produksi:
+```bash
+npm run build
+```
+*(Atau gunakan `npm run dev` jika Anda ingin mengembangkan tampilan secara live-reload).*
+
+### 9. Jalankan Server Aplikasi
+```bash
+php artisan serve
+```
+
+Aplikasi sekarang dapat diakses melalui browser di: **`http://localhost:8000`**
+
+---
+
+## 🔐 Akun Login Default
+
+Masuk ke halaman login di **`http://localhost:8000/login`** menggunakan akun administrator:
+
+- **Email**: `admin@absensi.local`
+- **Password**: `admin123`
+
+---
+
+## 🖥️ Menggunakan Terminal Kiosk Scan RFID
+
+1. Akses langsung halaman scanner di: **`http://localhost:8000/attendance/scan`** (bisa diakses tanpa login admin, cocok untuk PC/Laptop di pos gerbang atau resepsionis).
+2. Hubungkan alat **USB RFID Reader** ke laptop/PC.
+3. Tempelkan kartu/gantungan RFID siswa:
+   - Sesi absensi otomatis terdeteksi sesuai jam saat ini (Berangkat, Sholat Dhuhur, Pulang, dsb.).
+   - Foto dan data siswa langsung muncul di layar utama disertai indikator Tepat Waktu / Terlambat.
+   - Jika kartu belum terdaftar, sistem akan memberikan notifikasi dan admin dapat langsung mendaftarkannya ke siswa terkait.
+
+---
+
+## 🧪 Menjalankan Pengujian Otomatis (Tests)
+
+Proyek ini telah dilengkapi dengan 36 test kasus fitur otomatis:
+
+```bash
+php artisan test
+```
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dilisensikan di bawah [MIT License](LICENSE).
