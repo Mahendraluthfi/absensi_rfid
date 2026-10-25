@@ -53,12 +53,12 @@ Sebelum menginstal, pastikan komputer/server Anda telah terpasang:
    - Ekstensi PHP wajib aktif: `pdo_mysql`, `mbstring`, `openssl`, `curl`, `fileinfo`, `gd`, `zip`.
 2. **Composer** versi `>= 2.x`
 3. **Node.js** versi `>= 18.x` & **NPM**
-4. **MySQL** versi `>= 5.7` atau **MariaDB** versi `>= 10.3`
+4. **MySQL** versi `>= 5.7` atau **MariaDB** versi `>= 10.3` (atau melalui XAMPP)
 5. *(Opsional)* **USB RFID Reader** (125 KHz EM4100/TK4100 atau 13.56 MHz Mifare/NFC)
 
 ---
 
-## 🚀 Panduan Instalasi (Step-by-Step)
+## 🚀 Panduan Instalasi Standar (Step-by-Step)
 
 Ikuti langkah-langkah berikut untuk menjalankan project di komputer lokal:
 
@@ -131,9 +131,131 @@ Aplikasi sekarang dapat diakses melalui browser di: **`http://localhost:8000`**
 
 ---
 
+## 📦 Panduan Khusus: Instalasi Menggunakan XAMPP (`htdocs`)
+
+Jika Anda menggunakan paket web server **XAMPP di Windows** dan ingin meletakkan folder project di dalam `C:\xampp\htdocs\`:
+
+### 1. Persiapan XAMPP
+1. Pastikan versi PHP pada XAMPP Anda minimal **PHP 8.2** (buka terminal lalu ketik `php -v`).
+2. Buka **XAMPP Control Panel**, klik tombol **Start** pada modul **Apache** dan **MySQL**.
+3. Buka browser ke **phpMyAdmin**: `http://localhost/phpmyadmin`.
+4. Klik tab **Databases**, buat database baru bernama: **`absensi_rfid`** (Collation: `utf8mb4_unicode_ci`).
+5. **Cek Ekstensi PHP di XAMPP**:
+   Buka file konfigurasi `C:\xampp\php\php.ini` (atau klik tombol **Config > PHP (php.ini)** pada baris Apache di XAMPP Control Panel), pastikan baris-baris ekstensi berikut tidak diawali tanda titik koma `;` (sudah aktif):
+   ```ini
+   extension=fileinfo
+   extension=gd
+   extension=zip
+   extension=pdo_mysql
+   extension=mbstring
+   ```
+   *(Simpan file lalu klik **Stop** dan **Start** ulang Apache jika ada perubahan).*
+
+### 2. Meletakkan Project ke Folder `htdocs`
+Buka **PowerShell** atau **Command Prompt**, lalu arahkan ke folder `htdocs`:
+```bash
+cd C:\xampp\htdocs
+git clone https://github.com/Mahendraluthfi/absensi_rfid.git
+cd absensi_rfid
+```
+
+### 3. Install Dependensi & Setup Environment
+Di dalam folder `C:\xampp\htdocs\absensi_rfid`, jalankan:
+```bash
+# Install paket PHP
+composer install
+
+# Install paket JavaScript
+npm install
+
+# Buat file konfigurasi .env dari template
+copy .env.example .env
+```
+
+Buka file `.env` di text editor, pastikan konfigurasi database sesuai default XAMPP:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=absensi_rfid
+DB_USERNAME=root
+DB_PASSWORD=
+```
+*(Secara default, user MySQL XAMPP adalah `root` dan password-nya kosong).*
+
+Kemudian lanjutkan perintah berikut:
+```bash
+# Generate encryption key
+php artisan key:generate
+
+# Generate tabel dan data awal (115 siswa, foto, kategori, admin)
+php artisan migrate:fresh --seed
+
+# Build asset Vite (CSS & JS)
+npm run build
+```
+
+---
+
+### 4. Cara Menjalankan Aplikasi di XAMPP
+
+Ada 2 metode untuk mengakses aplikasi yang berada di `htdocs`:
+
+#### 💡 Metode A: Menggunakan `php artisan serve` (Paling Direkomendasikan & Praktis)
+Meskipun file ditaruh di `htdocs`, cara termudah dan paling stabil untuk Laravel + Inertia.js adalah menjalankan *built-in server*:
+1. Pastikan modul **MySQL** di XAMPP Control Panel tetap dalam kondisi **Running**.
+2. Di dalam folder `C:\xampp\htdocs\absensi_rfid`, jalankan:
+   ```bash
+   php artisan serve
+   ```
+3. Buka browser: **`http://localhost:8000`**
+
+---
+
+#### 🌐 Metode B: Menggunakan Apache VirtualHost XAMPP (Akses Port 80 Tanpa `:8000`)
+Jika Anda ingin mengakses aplikasi layaknya website lokal (contoh: `http://absensi.test`):
+
+1. Buka file `C:\xampp\apache\conf\extra\httpd-vhosts.conf` dengan text editor, lalu tambahkan konfigurasi ini di baris paling bawah:
+   ```apache
+   <VirtualHost *:80>
+       DocumentRoot "C:/xampp/htdocs/absensi_rfid/public"
+       ServerName absensi.test
+       <Directory "C:/xampp/htdocs/absensi_rfid/public">
+           Options Indexes FollowSymLinks
+           AllowOverride All
+           Require all granted
+       </Directory>
+   </VirtualHost>
+   ```
+
+2. Buka aplikasi **Notepad as Administrator**, buka file `C:\Windows\System32\drivers\etc\hosts`, lalu tambahkan baris berikut di paling bawah:
+   ```text
+   127.0.0.1    absensi.test
+   ```
+
+3. Pada file `.env` di project Anda, ubah `APP_URL`:
+   ```env
+   APP_URL=http://absensi.test
+   ```
+
+4. Di **XAMPP Control Panel**, klik **Stop** lalu **Start** pada modul **Apache** untuk memuat ulang konfigurasi.
+5. Buka browser di: **`http://absensi.test`**
+
+---
+
+#### 📁 Metode C: Akses Langsung Melalui Subfolder `localhost`
+Jika tanpa VirtualHost dan ingin diakses via `http://localhost/absensi_rfid/public`:
+1. Buka file `.env`, ubah `APP_URL` menjadi:
+   ```env
+   APP_URL=http://localhost/absensi_rfid/public
+   ```
+2. Buka browser langsung ke URL: **`http://localhost/absensi_rfid/public`**
+
+---
+
 ## 🔐 Akun Login Default
 
-Masuk ke halaman login di **`http://localhost:8000/login`** menggunakan akun administrator:
+Masuk ke halaman login di **`http://localhost:8000/login`** (atau `http://absensi.test/login` jika pakai VirtualHost):
 
 - **Email**: `admin@absensi.local`
 - **Password**: `admin123`
