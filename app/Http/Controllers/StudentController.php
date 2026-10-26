@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SchoolClass;
 use App\Models\Student;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -39,7 +40,10 @@ class StudentController extends Controller
 
         $students = $query->orderBy('kelas')->orderBy('nama')->paginate(15)->withQueryString();
 
-        $classes = Student::select('kelas')->distinct()->orderBy('kelas')->pluck('kelas');
+        $classes = SchoolClass::active()->ordered()->pluck('nama');
+        if ($classes->isEmpty()) {
+            $classes = Student::select('kelas')->distinct()->orderBy('kelas')->pluck('kelas');
+        }
 
         $stats = [
             'total' => Student::count(),
@@ -71,7 +75,7 @@ class StudentController extends Controller
             'kelas' => ['required', 'string', 'max:30'],
             'rfid_uid' => ['nullable', 'string', 'max:50', 'unique:students,rfid_uid'],
             'jenis_kelamin' => ['nullable', 'in:L,P'],
-            'status' => ['required', 'in:aktif,nonaktif'],
+            'status' => ['required', 'in:aktif,nonaktif,lulus'],
             'no_telepon' => ['nullable', 'string', 'max:30'],
             'foto' => ['nullable'],
         ]);
@@ -84,9 +88,12 @@ class StudentController extends Controller
             $validated['foto'] = '/photos/'.$fileName;
         }
 
-        $validated['rfid_uid'] = !empty($validated['rfid_uid']) ? $validated['rfid_uid'] : null;
-        $validated['no_telepon'] = !empty($validated['no_telepon']) ? $validated['no_telepon'] : null;
-        $validated['jenis_kelamin'] = !empty($validated['jenis_kelamin']) ? $validated['jenis_kelamin'] : null;
+        $validated['rfid_uid'] = ! empty($validated['rfid_uid']) ? $validated['rfid_uid'] : null;
+        $validated['no_telepon'] = ! empty($validated['no_telepon']) ? $validated['no_telepon'] : null;
+        $validated['jenis_kelamin'] = ! empty($validated['jenis_kelamin']) ? $validated['jenis_kelamin'] : null;
+
+        $schoolClass = SchoolClass::where('nama', $validated['kelas'])->first();
+        $validated['school_class_id'] = $schoolClass?->id;
 
         Student::create($validated);
 
@@ -104,7 +111,7 @@ class StudentController extends Controller
             'kelas' => ['required', 'string', 'max:30'],
             'rfid_uid' => ['nullable', 'string', 'max:50', Rule::unique('students')->ignore($student->id)],
             'jenis_kelamin' => ['nullable', 'in:L,P'],
-            'status' => ['required', 'in:aktif,nonaktif'],
+            'status' => ['required', 'in:aktif,nonaktif,lulus'],
             'no_telepon' => ['nullable', 'string', 'max:30'],
             'foto' => ['nullable'],
         ]);
@@ -119,9 +126,12 @@ class StudentController extends Controller
             unset($validated['foto']);
         }
 
-        $validated['rfid_uid'] = !empty($validated['rfid_uid']) ? $validated['rfid_uid'] : null;
-        $validated['no_telepon'] = !empty($validated['no_telepon']) ? $validated['no_telepon'] : null;
-        $validated['jenis_kelamin'] = !empty($validated['jenis_kelamin']) ? $validated['jenis_kelamin'] : null;
+        $validated['rfid_uid'] = ! empty($validated['rfid_uid']) ? $validated['rfid_uid'] : null;
+        $validated['no_telepon'] = ! empty($validated['no_telepon']) ? $validated['no_telepon'] : null;
+        $validated['jenis_kelamin'] = ! empty($validated['jenis_kelamin']) ? $validated['jenis_kelamin'] : null;
+
+        $schoolClass = SchoolClass::where('nama', $validated['kelas'])->first();
+        $validated['school_class_id'] = $schoolClass?->id;
 
         $student->update($validated);
 

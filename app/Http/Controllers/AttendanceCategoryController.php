@@ -51,9 +51,9 @@ class AttendanceCategoryController extends Controller
         $validated['jam_selesai'] = ! empty($validated['jam_selesai']) ? $validated['jam_selesai'] : null;
         $validated['toleransi_terlambat'] = ! empty($validated['toleransi_terlambat']) ? $validated['toleransi_terlambat'] : null;
 
-        $validated['jam_mulai'] = !empty($validated['jam_mulai']) ? $validated['jam_mulai'] : null;
-        $validated['jam_selesai'] = !empty($validated['jam_selesai']) ? $validated['jam_selesai'] : null;
-        $validated['toleransi_terlambat'] = !empty($validated['toleransi_terlambat']) ? $validated['toleransi_terlambat'] : null;
+        $validated['jam_mulai'] = ! empty($validated['jam_mulai']) ? $validated['jam_mulai'] : null;
+        $validated['jam_selesai'] = ! empty($validated['jam_selesai']) ? $validated['jam_selesai'] : null;
+        $validated['toleransi_terlambat'] = ! empty($validated['toleransi_terlambat']) ? $validated['toleransi_terlambat'] : null;
 
         AttendanceCategory::create($validated);
 
@@ -81,9 +81,9 @@ class AttendanceCategoryController extends Controller
         $validated['jam_selesai'] = ! empty($validated['jam_selesai']) ? $validated['jam_selesai'] : null;
         $validated['toleransi_terlambat'] = ! empty($validated['toleransi_terlambat']) ? $validated['toleransi_terlambat'] : null;
 
-        $validated['jam_mulai'] = !empty($validated['jam_mulai']) ? $validated['jam_mulai'] : null;
-        $validated['jam_selesai'] = !empty($validated['jam_selesai']) ? $validated['jam_selesai'] : null;
-        $validated['toleransi_terlambat'] = !empty($validated['toleransi_terlambat']) ? $validated['toleransi_terlambat'] : null;
+        $validated['jam_mulai'] = ! empty($validated['jam_mulai']) ? $validated['jam_mulai'] : null;
+        $validated['jam_selesai'] = ! empty($validated['jam_selesai']) ? $validated['jam_selesai'] : null;
+        $validated['toleransi_terlambat'] = ! empty($validated['toleransi_terlambat']) ? $validated['toleransi_terlambat'] : null;
 
         $category->update($validated);
 

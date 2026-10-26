@@ -5,6 +5,7 @@ use App\Http\Controllers\AttendanceReportController;
 use App\Http\Controllers\AttendanceScanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SchoolClassController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/students/{student}/unpair-rfid', [StudentController::class, 'unpairRfid'])->name('students.unpair-rfid');
     Route::post('/students/import', [StudentController::class, 'importExcel'])->name('students.import');
     Route::get('/students/export', [StudentController::class, 'exportExcel'])->name('students.export');
+
+    // Master Data Kelas & Kenaikan Kelas
+    Route::get('/classes', [SchoolClassController::class, 'index'])->name('classes.index');
+    Route::post('/classes', [SchoolClassController::class, 'store'])->name('classes.store');
+    Route::put('/classes/{schoolClass}', [SchoolClassController::class, 'update'])->name('classes.update');
+    Route::delete('/classes/{schoolClass}', [SchoolClassController::class, 'destroy'])->name('classes.destroy');
+    Route::get('/classes/{schoolClass}/students', [SchoolClassController::class, 'getStudentsByClass'])->name('classes.students');
+    Route::post('/classes/promote', [SchoolClassController::class, 'promote'])->name('classes.promote');
 
     // Master Kategori Absensi & Pengaturan
     Route::get('/categories', [AttendanceCategoryController::class, 'index'])->name('categories.index');

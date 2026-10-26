@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
@@ -19,6 +20,7 @@ class Student extends Model
     protected $fillable = [
         'nisn',
         'nama',
+        'school_class_id',
         'kelas',
         'rfid_uid',
         'jenis_kelamin',
@@ -26,6 +28,14 @@ class Student extends Model
         'no_telepon',
         'foto',
     ];
+
+    /**
+     * Relationship with school class.
+     */
+    public function schoolClass(): BelongsTo
+    {
+        return $this->belongsTo(SchoolClass::class, 'school_class_id');
+    }
 
     /**
      * Relationship with attendance logs.

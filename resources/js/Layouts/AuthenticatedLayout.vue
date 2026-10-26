@@ -77,6 +77,7 @@ onUnmounted(() => {
 const navigation = [
     { name: 'Dashboard', href: route('dashboard'), icon: LayoutDashboard, active: route().current('dashboard') },
     { name: 'Data Siswa', href: route('students.index'), icon: Users, active: route().current('students.*') },
+    { name: 'Data Kelas', href: route('classes.index'), icon: School, active: route().current('classes.*') },
     { name: 'Kategori Absen', href: route('categories.index'), icon: Tags, active: route().current('categories.*') },
     { name: 'Laporan Kehadiran', href: route('reports.index'), icon: FileSpreadsheet, active: route().current('reports.*') },
 ];

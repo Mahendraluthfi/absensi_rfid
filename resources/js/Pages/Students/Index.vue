@@ -73,7 +73,7 @@ const photoPreview = ref(null);
 const studentForm = useForm({
     nisn: "",
     nama: "",
-    kelas: "VII",
+    kelas: props.classes && props.classes.length > 0 ? props.classes[0] : "VII",
     rfid_uid: "",
     jenis_kelamin: "L",
     status: "aktif",
@@ -755,12 +755,9 @@ const submitImport = () => {
                                 class="w-full h-10 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                                 required
                             >
-                                <option value="VII">VII</option>
-                                <option value="VIII A">VIII A</option>
-                                <option value="VIII B">VIII B</option>
-                                <option value="IX A">IX A</option>
-                                <option value="IX B">IX B</option>
-                                <option value="IX C">IX C</option>
+                                <option v-for="c in classes" :key="c" :value="c">
+                                    {{ c }}
+                                </option>
                             </select>
                             <p
                                 v-if="studentForm.errors.kelas"
@@ -850,6 +847,7 @@ const submitImport = () => {
                             >
                                 <option value="aktif">Aktif</option>
                                 <option value="nonaktif">Non-Aktif</option>
+                                <option value="lulus">Lulus / Alumni</option>
                             </select>
                         </div>
                     </div>
