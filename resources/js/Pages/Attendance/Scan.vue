@@ -448,14 +448,19 @@ onUnmounted(() => {
                         </div>
                     </div>
 
-                    <!-- STATE 2: SCAN SUCCESS WITH STUDENT PHOTO -->
-                    <div v-else-if="scanResult.status === 'success'" class="space-y-4 max-w-xl animate-in fade-in zoom-in-95 duration-200">
-                        <!-- Student Photo Card Frame -->
-                        <div class="relative mx-auto inline-block">
+                    <!-- STATE 2: SCAN SUCCESS WITH STUDENT PHOTO (PORTRAIT LEFT, INFO RIGHT) -->
+                    <div
+                        v-else-if="scanResult.status === 'success'"
+                        class="w-full max-w-3xl flex flex-col md:flex-row items-center md:items-center justify-center gap-6 md:gap-8 text-center md:text-left animate-in fade-in zoom-in-95 duration-200"
+                    >
+                        <!-- Left: Large Portrait Student Photo Card -->
+                        <div class="relative flex-shrink-0">
                             <div
                                 :class="[
-                                    scanResult.is_late ? 'border-amber-400 shadow-amber-500/30' : 'border-emerald-400 shadow-emerald-500/30',
-                                    'w-36 h-36 sm:w-40 sm:h-40 rounded-3xl overflow-hidden border-4 shadow-2xl bg-slate-900 flex items-center justify-center p-1',
+                                    scanResult.is_late
+                                        ? 'border-amber-400 shadow-amber-500/30 ring-4 ring-amber-500/10'
+                                        : 'border-emerald-400 shadow-emerald-500/30 ring-4 ring-emerald-500/10',
+                                    'w-48 h-64 sm:w-56 sm:h-76 lg:w-64 lg:h-84 rounded-3xl overflow-hidden border-4 shadow-2xl bg-slate-900 flex items-center justify-center p-1.5',
                                 ]"
                             >
                                 <img
@@ -466,7 +471,7 @@ onUnmounted(() => {
                                 />
                                 <div
                                     v-else
-                                    class="w-full h-full bg-indigo-600 rounded-2xl flex items-center justify-center font-black text-4xl text-white"
+                                    class="w-full h-full bg-indigo-600 rounded-2xl flex items-center justify-center font-black text-5xl text-white"
                                 >
                                     {{ scanResult.student.nama.charAt(0) }}
                                 </div>
@@ -475,78 +480,106 @@ onUnmounted(() => {
                             <!-- Success / Late Check Badge Icon -->
                             <div
                                 :class="[
-                                    scanResult.is_late ? 'bg-amber-500 text-slate-950' : 'bg-emerald-500 text-slate-950',
-                                    'absolute -bottom-2 -right-2 w-10 h-10 rounded-full border-4 border-slate-950 flex items-center justify-center shadow-lg',
+                                    scanResult.is_late
+                                        ? 'bg-amber-500 text-slate-950'
+                                        : 'bg-emerald-500 text-slate-950',
+                                    'absolute -bottom-2 -right-2 w-12 h-12 rounded-full border-4 border-slate-950 flex items-center justify-center shadow-xl',
                                 ]"
                             >
-                                <CheckCircle2 class="w-6 h-6" />
+                                <CheckCircle2 class="w-7 h-7 stroke-[2.5]" />
                             </div>
                         </div>
 
-                        <!-- Status Badge & Category -->
-                        <div class="flex items-center justify-center space-x-2">
-                            <Badge
-                                :variant="scanResult.is_late ? 'amber' : 'emerald'"
-                                class="text-sm px-4 py-1.5 uppercase tracking-wider font-extrabold shadow-sm"
+                        <!-- Right: Student Information & Attendance Details -->
+                        <div class="flex-1 space-y-3.5 min-w-0">
+                            <!-- Category & Late Status Badge -->
+                            <div class="flex items-center justify-center md:justify-start">
+                                <Badge
+                                    :variant="scanResult.is_late ? 'amber' : 'emerald'"
+                                    class="text-xs sm:text-sm px-4 py-1.5 uppercase tracking-wider font-extrabold shadow-sm"
+                                >
+                                    {{ scanResult.category.nama }}
+                                    <span v-if="scanResult.is_late"> • TERLAMBAT +{{ scanResult.late }} MENIT</span>
+                                    <span v-else> • TEPAT WAKTU</span>
+                                </Badge>
+                            </div>
+
+                            <!-- Student Name & Identity -->
+                            <div>
+                                <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-snug">
+                                    {{ scanResult.student.nama }}
+                                </h2>
+                                <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 mt-2 text-sm text-slate-300">
+                                    <span>NISN: <strong class="font-mono text-white font-bold">{{ scanResult.student.nisn }}</strong></span>
+                                    <span class="text-slate-600 hidden sm:inline">•</span>
+                                    <span>Kelas: <strong class="text-indigo-400 font-bold">Kelas {{ scanResult.student.kelas }}</strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Tap Timestamp & Summary Pill -->
+                            <div class="p-3 rounded-2xl bg-slate-950/70 border border-slate-800/80 flex items-center justify-between text-xs font-mono max-w-md mx-auto md:mx-0">
+                                <span class="text-slate-400 flex items-center space-x-1.5">
+                                    <Clock class="w-4 h-4 text-indigo-400" />
+                                    <span>Waktu Tap:</span>
+                                </span>
+                                <span class="text-white font-bold text-sm">{{ scanResult.time }} WIB</span>
+                            </div>
+
+                            <!-- Result Feedback Message -->
+                            <p
+                                :class="[
+                                    scanResult.is_late
+                                        ? 'text-amber-300 bg-amber-950/40 border-amber-800/60'
+                                        : 'text-emerald-300 bg-emerald-950/40 border-emerald-800/60',
+                                    'text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl border flex items-center justify-center md:justify-start space-x-2 max-w-md mx-auto md:mx-0',
+                                ]"
                             >
-                                {{ scanResult.category.nama }}
-                                <span v-if="scanResult.is_late"> • TERLAMBAT +{{ scanResult.late }} MENIT</span>
-                                <span v-else> • TEPAT WAKTU</span>
-                            </Badge>
-                        </div>
-
-                        <!-- Student Information -->
-                        <div>
-                            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug">
-                                {{ scanResult.student.nama }}
-                            </h2>
-                            <p class="text-sm text-slate-300 font-medium mt-1">
-                                NISN: <span class="font-mono text-white font-bold">{{ scanResult.student.nisn }}</span> •
-                                Kelas: <strong class="text-indigo-400">Kelas {{ scanResult.student.kelas }}</strong>
-                            </p>
-                            <p class="text-xs text-slate-400 mt-2 font-mono">
-                                Waktu Tap: {{ scanResult.time }} WIB
+                                <CheckCircle2 class="w-4 h-4 flex-shrink-0" />
+                                <span>{{ scanResult.message }}</span>
                             </p>
                         </div>
-
-                        <p
-                            :class="[
-                                scanResult.is_late ? 'text-amber-300' : 'text-emerald-300',
-                                'text-sm font-semibold',
-                            ]"
-                        >
-                            {{ scanResult.message }}
-                        </p>
                     </div>
 
-                    <!-- STATE 3: DUPLICATE TAP -->
-                    <div v-else-if="scanResult.status === 'duplicate'" class="space-y-4 max-w-lg animate-in fade-in zoom-in-95 duration-200">
-                        <div class="relative w-28 h-28 mx-auto">
-                            <div class="w-28 h-28 rounded-3xl overflow-hidden border-4 border-amber-500 bg-slate-900 p-1">
+                    <!-- STATE 3: DUPLICATE TAP (PORTRAIT LEFT, INFO RIGHT) -->
+                    <div
+                        v-else-if="scanResult.status === 'duplicate'"
+                        class="w-full max-w-2xl flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 text-center md:text-left animate-in fade-in zoom-in-95 duration-200"
+                    >
+                        <div class="relative flex-shrink-0">
+                            <div class="w-44 h-58 sm:w-48 sm:h-64 rounded-3xl overflow-hidden border-4 border-amber-500 bg-slate-900 p-1.5 shadow-2xl">
                                 <img
                                     v-if="scanResult.student.foto"
                                     :src="scanResult.student.foto"
                                     class="w-full h-full object-cover rounded-2xl"
                                 />
-                                <div v-else class="w-full h-full bg-amber-600 rounded-2xl flex items-center justify-center font-bold text-2xl text-white">
+                                <div v-else class="w-full h-full bg-amber-600 rounded-2xl flex items-center justify-center font-bold text-4xl text-white">
                                     {{ scanResult.student.nama.charAt(0) }}
                                 </div>
                             </div>
-                            <div class="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center border-2 border-slate-950">
-                                <AlertCircle class="w-5 h-5" />
+                            <div class="absolute -bottom-2 -right-2 w-10 h-10 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center border-4 border-slate-950 shadow-lg">
+                                <AlertCircle class="w-6 h-6" />
                             </div>
                         </div>
 
-                        <Badge variant="amber" class="text-xs px-3 py-1">SUDAH PRESENSI PADA SESI INI</Badge>
-                        <h2 class="text-xl sm:text-2xl font-black text-white">
-                            {{ scanResult.student.nama }}
-                        </h2>
-                        <p class="text-xs text-slate-400">
-                            Kelas {{ scanResult.student.kelas }} • Sudah tercatat pada {{ scanResult.time }} WIB
-                        </p>
-                        <p class="text-sm text-amber-300 font-medium bg-amber-950/40 p-3 rounded-xl border border-amber-800/40">
-                            {{ scanResult.message }}
-                        </p>
+                        <div class="flex-1 space-y-3 min-w-0">
+                            <div class="flex items-center justify-center md:justify-start">
+                                <Badge variant="amber" class="text-xs px-3.5 py-1.5 font-bold uppercase tracking-wider">
+                                    SUDAH PRESENSI PADA SESI INI
+                                </Badge>
+                            </div>
+                            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                                {{ scanResult.student.nama }}
+                            </h2>
+                            <p class="text-sm text-slate-300">
+                                Kelas: <strong class="text-indigo-400 font-bold">Kelas {{ scanResult.student.kelas }}</strong>
+                            </p>
+                            <div class="p-2.5 rounded-xl bg-slate-950/70 border border-slate-800 text-xs font-mono max-w-md mx-auto md:mx-0">
+                                Sudah tercatat pada: <strong class="text-amber-400 font-bold">{{ scanResult.time }} WIB</strong>
+                            </div>
+                            <p class="text-xs text-amber-300 font-medium bg-amber-950/40 p-3 rounded-xl border border-amber-800/40 max-w-md mx-auto md:mx-0">
+                                {{ scanResult.message }}
+                            </p>
+                        </div>
                     </div>
 
                     <!-- STATE 4: UNREGISTERED CARD -->
