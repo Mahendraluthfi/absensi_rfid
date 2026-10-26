@@ -249,3 +249,4 @@ class SchoolClassTest extends TestCase
         ]);
     }
 }
+

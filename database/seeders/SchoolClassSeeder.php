@@ -38,3 +38,4 @@ class SchoolClassSeeder extends Seeder
         }
     }
 }
+
