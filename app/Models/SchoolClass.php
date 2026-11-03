@@ -74,4 +74,3 @@ class SchoolClass extends Model
         return $query->orderBy('tingkat')->orderBy('urutan')->orderBy('nama');
     }
 }
-

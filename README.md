@@ -253,6 +253,28 @@ Jika tanpa VirtualHost dan ingin diakses via `http://localhost/absensi_rfid/publ
 
 ---
 
+## 🖥️ Mode Desktop Standalone (.exe) via NativePHP
+
+Aplikasi ini telah mendukung konversi menjadi **Aplikasi Desktop Windows Standalone** (tanpa perlu web server XAMPP / Apache di komputer pos satpam).
+
+### 1. Menjalankan Mode Desktop saat Pengembangan
+Untuk menjalankan aplikasi dalam jendela desktop native (Electron):
+```bash
+php artisan native:run
+# atau
+composer native:dev
+```
+Aplikasi akan membuka jendela desktop native dengan database SQLite bawaan yang otomatis terkonfigurasi.
+
+### 2. Mem-Build File Installer Windows (`.exe`)
+Untuk meng-compile seluruh aplikasi (termasuk runtime PHP 8.3 mandiri dan SQLite) menjadi file installer `.exe`:
+```bash
+php artisan native:build win x64
+```
+Hasil file installer (`.exe`) akan otomatis dibuat di dalam folder `dist/` dan siap dipasang di laptop atau PC Windows sekolah manapun tanpa perlu instalasi XAMPP.
+
+---
+
 ## 🔐 Akun Login Default
 
 Masuk ke halaman login di **`http://localhost:8000/login`** (atau `http://absensi.test/login` jika pakai VirtualHost):
